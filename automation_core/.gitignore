@@ -1,9 +1,0 @@
-dist
-node_modules
-coverage
-output
-package-lock.json
-yarn.lock
-.env
-data/*.db-shm
-data/*.db-wal
