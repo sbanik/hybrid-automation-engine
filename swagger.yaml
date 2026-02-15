@@ -1,0 +1,89 @@
+openapi: 3.0.0
+info:
+  title: Hybrid Automation Engine
+  version: 1.0.0
+  description: Management API for Playwright-based API and UI automation.
+
+servers:
+  - url: http://localhost:3001
+    description: Local Development Server
+
+paths:
+  /api/execute:
+    post:
+      tags: [Execution]
+      summary: Run a hybrid scenario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                scenarioId:
+                  type: string
+                  example: "e2e-checkout-flow"
+                variables:
+                  type: object
+                  example: { "env": "staging", "user": "test_admin" }
+      responses:
+        '200':
+          description: Test Passed
+        '400':
+          description: Test Failed
+
+  /api/spec:
+    get:
+      tags: [API Specs]
+      summary: List all API specifications
+    post:
+      tags: [API Specs]
+      summary: Create/Update an API spec
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiSpec'
+
+  /api/uiflow:
+    get:
+      tags: [UI Flows]
+      summary: List all UI flows
+    post:
+      tags: [UI Flows]
+      summary: Create/Update a UI flow
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UiFlow'
+
+components:
+  schemas:
+    ApiSpec:
+      type: object
+      required: [id, endpoint, method]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        method: { type: string, enum: [GET, POST, PUT, DELETE] }
+        endpoint: { type: string }
+        headers: { type: object }
+        body: { type: object }
+        timeout: { type: integer, default: 30000 }
+        use_page_context: { type: boolean, default: false }
+        failOnStatusCode: { type: boolean, default: true }
+
+    UiFlow:
+      type: object
+      required: [id, steps]
+      properties:
+        id: { type: string }
+        description: { type: string }
+        steps:
+          type: array
+          items:
+            type: object
+            properties:
+              action: { type: string, enum: [goto, click, fill, press, wait, text_is] }
+              selector: { type: string }
+              value: { type: string }
