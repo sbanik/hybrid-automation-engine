@@ -43,4 +43,19 @@ router.put('/scenario/:id', ScenarioController.updateScenario); // Update
 router.delete('/scenario/:id', ScenarioController.deleteScenario);// Delete
 
 
+// =========================================================
+// 5. Database Cleanup
+// =========================================================
+router.post('/admin/checkpoint', (req, res) => {
+    try {
+        const { db } = require('../config/Database');
+        // FULL checkpoint: ensures all data is moved and the WAL file is truncated
+        db.pragma('wal_checkpoint(FULL)');
+        res.json({ message: "Checkpoint successful. WAL files merged." });
+    } catch (e: any) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+
 export default router;
