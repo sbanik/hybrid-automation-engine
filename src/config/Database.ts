@@ -21,6 +21,7 @@ class DatabaseUtility {
 
         // Apply WAL mode for better concurrency handling during tests
         this._db.pragma('journal_mode = WAL');
+        this._db.pragma('wal_checkpoint(FULL)');
 
         // 3. Initialize Schema
         this.initSchema(schemaPath);
